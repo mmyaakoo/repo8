@@ -1,0 +1,85 @@
+using System;
+using System.Collections.Generic;
+
+public sealed class ConfigurationManager
+{
+    private static ConfigurationManager instance;
+    private Dictionary<string, string> settings;
+
+    private ConfigurationManager()
+    {
+        settings = new Dictionary<string, string>();
+    }
+
+    public static ConfigurationManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new ConfigurationManager();
+            }
+            return instance;
+        }
+    }
+
+    public void SetSetting(string key, string value)
+    {
+        if (settings.ContainsKey(key))
+        {
+            settings[key] = value;
+        }
+        else
+        {
+            settings.Add(key, value);
+        }
+    }
+
+    public string GetSetting(string key)
+    {
+        return settings.ContainsKey(key) ? settings[key] : "Setting not found";
+    }
+
+    public void DisplaySettings()
+    {
+        foreach (var setting in settings)
+        {
+            Console.WriteLine($"{setting.Key}: {setting.Value}");
+        }
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        ConfigurationManager configManager = ConfigurationManager.Instance;
+
+        configManager.SetSetting("LogLevel", "Debug");
+        configManager.SetSetting("DBConnection", "ConnectionString");
+
+        Console.WriteLine("Initial Settings:");
+        configManager.DisplaySettings();
+
+        // Simulate changes via console input
+        Console.WriteLine("\nEnter new settings (key=value) or 'exit' to quit:");
+        string userInput;
+        do
+        {
+            userInput = Console.ReadLine();
+            if (userInput != "exit")
+            {
+                string[] inputParts = userInput.Split('=');
+                if (inputParts.Length == 2)
+                {
+                    configManager.SetSetting(inputParts[0], inputParts[1]);
+                    configManager.DisplaySettings();
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please use the format key=value.");
+                }
+            }
+        } while (userInput != "exit");
+    }
+}
