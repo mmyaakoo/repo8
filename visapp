@@ -1,0 +1,90 @@
+using System;
+using System.Collections.Generic;
+
+interface IGraph
+{
+    void Draw();
+}
+
+class LineGraph : IGraph
+{
+    public void Draw()
+    {
+        Console.WriteLine("Drawing Line Graph");
+    }
+}
+
+class BarGraph : IGraph
+{
+    public void Draw()
+    {
+        Console.WriteLine("Drawing Bar Graph");
+    }
+}
+
+class PieChart : IGraph
+{
+    public void Draw()
+    {
+        Console.WriteLine("Drawing Pie Chart");
+    }
+}
+
+abstract class GraphFactory
+{
+    public abstract IGraph CreateGraph();
+}
+
+class LineGraphFactory : GraphFactory
+{
+    public override IGraph CreateGraph()
+    {
+        return new LineGraph();
+    }
+}
+
+class BarGraphFactory : GraphFactory
+{
+    public override IGraph CreateGraph()
+    {
+        return new BarGraph();
+    }
+}
+
+class PieChartFactory : GraphFactory
+{
+    public override IGraph CreateGraph()
+    {
+        return new PieChart();
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Choose a graph type: 1 - Line Graph, 2 - Bar Graph, 3 - Pie Chart");
+        string userInput = Console.ReadLine();
+
+        GraphFactory graphFactory = null;
+
+        switch (userInput)
+        {
+            case "1":
+                graphFactory = new LineGraphFactory();
+                break;
+            case "2":
+                graphFactory = new BarGraphFactory();
+                break;
+            case "3":
+                graphFactory = new PieChartFactory();
+                break;
+            default:
+                Console.WriteLine("Invalid choice.");
+                return;
+        }
+
+        IGraph graph = graphFactory.CreateGraph();
+        graph.Draw();
+    }
+}
